@@ -1,0 +1,43 @@
+name: Maven Simple Verify
+on:
+  workflow_call:
+    inputs:
+      java-version:
+        required: false
+        default: '17'
+        type: string
+      java-distribution:
+        required: false
+        default: 'temurin'
+        type: string
+    secrets:
+      PACKAGES_READ_USER:
+        description: The User name of the user owning the Access Token
+        required: true
+      PACKAGES_READ_PAT:
+        description: The Access Token, which allows read of private packages
+        required: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: ${{ inputs.java-distribution }}
+          java-version: ${{ inputs.java-version }}
+          cache: 'maven'
+
+      - name: Verify with Maven
+        run: |
+          mvn -B clean verify -s .github/maven/settings.xml
+        env:
+          MAVEN_USER: ${{ secrets.PACKAGES_READ_USER }}
+          MAVEN_PASSWORD: ${{ secrets.PACKAGES_READ_PAT }}
+
+
+

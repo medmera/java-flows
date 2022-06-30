@@ -1,12 +1,28 @@
-name: Release POM
+name: Maven Simple Release
 on:
-  push:
-    branches:
-      - develop
-    paths:
-      - ".github/**"
-      - "pom.xml"
-      - "**/pom.xml"
+  workflow_call:
+    inputs:
+      java-version:
+        required: false
+        default: '17'
+        type: string
+      java-distribution:
+        required: false
+        default: 'temurin'
+        type: string
+    secrets:
+      PACKAGES_READ_USER:
+        description: The User name of the user owning read the Access Token
+        required: true
+      PACKAGES_READ_PAT:
+        description: The Access Token, which allows read of private packages
+        required: true
+      PACKAGES_WRITE_USER:
+        description: The User name of the user owning the write Access Token
+        required: true
+      PACKAGES_WITE_PAT:
+        description: The Access Token, which allows write of private packages
+        required: true
 
 jobs:
   release:
@@ -20,8 +36,8 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
-          distribution: "temurin"
-          java-version: "17"
+          distribution: ${{ inputs.java-distribution }}
+          java-version: ${{ inputs.java-version }}
           cache: 'maven'
           server-id: 'github'
 
