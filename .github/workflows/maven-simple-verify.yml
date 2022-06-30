@@ -32,9 +32,9 @@ jobs:
       - name: Checkout Maven Settings
         uses: actions/checkout@v3
         with:
-          repository: medmera/maven-settings
+          repository: 'medmera/maven-settings'
           ref: ${{ inputs.settings-ref }}
-          path: maven-settings
+          path: 'maven-settings'
 
       - name: Set up JDK
         uses: actions/setup-java@v3
