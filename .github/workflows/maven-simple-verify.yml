@@ -25,6 +25,12 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
+      - name: Checkout Maven Settings
+        uses: actions/checkout@v3
+        with:
+          repository: medmera/maven-settings
+          path: maven-settings
+
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
@@ -34,7 +40,7 @@ jobs:
 
       - name: Verify with Maven
         run: |
-          mvn -B clean verify -s .github/maven/settings.xml
+          mvn -B clean verify -s .maven-settings/settings.xml
         env:
           MAVEN_USER: ${{ secrets.PACKAGES_READ_USER }}
           MAVEN_PASSWORD: ${{ secrets.PACKAGES_READ_PAT }}

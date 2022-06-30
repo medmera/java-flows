@@ -33,6 +33,12 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Checkout Maven Settings
+        uses: actions/checkout@v3
+        with:
+          repository: medmera/maven-settings
+          path: maven-settings
+
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
@@ -48,14 +54,14 @@ jobs:
 
       - name: Verify with Maven
         run: |
-            mvn -B clean verify -s .github/maven/settings.xml
+            mvn -B clean verify -s maven-settings/settings.xml
         env:
           MAVEN_USER: ${{ secrets.PACKAGES_READ_USER }}
           MAVEN_PASSWORD: ${{ secrets.PACKAGES_READ_PAT }}
 
       - name: Release
         run: |
-          mvn -B gitflow:release -DargLine="-s .github/maven/settings.xml" -s .github/maven/settings.xml
+          mvn -B gitflow:release -DargLine="-s maven-settings/settings.xml" -s maven-settings/settings.xml
         env:
           MAVEN_USER: ${{ secrets.PACKAGES_WRITE_USER }}
           MAVEN_PASSWORD: ${{ secrets.PACKAGES_WRITE_PAT }}
