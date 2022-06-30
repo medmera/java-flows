@@ -43,7 +43,7 @@ jobs:
 
       - name: Configure Git
         run: |
-          git config user.name ${GITHUB_ACTOR}
+          git config user.name ${process.env.GITHUB_ACTOR}
           git config user.email "github-action@github.com"
 
       - name: Verify with Maven
