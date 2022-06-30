@@ -1,0 +1,49 @@
+name: Release POM
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - ".github/**"
+      - "pom.xml"
+      - "**/pom.xml"
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: "temurin"
+          java-version: "17"
+          cache: 'maven'
+          server-id: 'github'
+
+      - name: Configure Git
+        run: |
+          git config user.name ${GITHUB_ACTOR}
+          git config user.email "github-action@github.com"
+
+      - name: Verify with Maven
+        run: |
+            mvn -B clean verify -s .github/maven/settings.xml
+        env:
+          MAVEN_USER: ${{ secrets.PACKAGES_READ_USER }}
+          MAVEN_PASSWORD: ${{ secrets.PACKAGES_READ_PAT }}
+
+      - name: Release
+        run: |
+          mvn -B gitflow:release -DargLine="-s .github/maven/settings.xml" -s .github/maven/settings.xml
+        env:
+          MAVEN_USER: ${{ secrets.PACKAGES_WRITE_USER }}
+          MAVEN_PASSWORD: ${{ secrets.PACKAGES_WRITE_PAT }}
+
+      - name: Push release
+        run: |
+          git push --all --follow-tags
