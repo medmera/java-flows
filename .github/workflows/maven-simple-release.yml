@@ -1,4 +1,3 @@
-name: Maven Simple Release
 on:
   workflow_call:
     inputs:
@@ -38,9 +37,9 @@ jobs:
           fetch-depth: 0
 
       - name: Checkout Maven Settings
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
-          repository: 'medmera/maven-settings'
+          repository: "medmera/mvn-settings"
           ref: ${{ inputs.settings-ref }}
           path: 'maven-settings'
 
